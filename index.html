@@ -295,6 +295,36 @@ footer ul li span { font-size: 0.86rem; color: var(--muted); line-height: 1.5; d
     <span>Hecho con obsesión por los detalles.</span>
   </div>
 </footer>
+<script>
+const hamburger = document.getElementById('hamburger');
+const drawer = document.getElementById('mobileDrawer');
+const overlay = document.getElementById('drawerOverlay');
+function openDrawer() { hamburger.classList.add('open'); drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeDrawer() { hamburger.classList.remove('open'); drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+hamburger.addEventListener('click', () => { drawer.classList.contains('open') ? closeDrawer() : openDrawer(); });
+overlay.addEventListener('click', closeDrawer);
+document.querySelectorAll('.drawer-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const targetId = link.getAttribute('href');
+    if (!targetId || !targetId.startsWith('#')) return;
+    e.preventDefault();
+    closeDrawer();
+    setTimeout(() => {
+      const target = document.querySelector(targetId);
+      if (target) { target.scrollIntoView({ behavior: 'smooth' }); } else { window.location.hash = targetId; }
+    }, 50);
+  });
+});
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const targetId = link.getAttribute('href');
+    if (!targetId || !targetId.startsWith('#')) return;
+    e.preventDefault();
+    const target = document.querySelector(targetId);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
 <script type="module">
 import { db } from './firebase-config.js';
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -338,30 +368,6 @@ g.innerHTML = loadingItem;
   }
 })();
 
-// Mobile drawer
-const hamburger = document.getElementById('hamburger');
-const drawer = document.getElementById('mobileDrawer');
-const overlay = document.getElementById('drawerOverlay');
-function openDrawer() { hamburger.classList.add('open'); drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeDrawer() { hamburger.classList.remove('open'); drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
-hamburger.addEventListener('click', () => { drawer.classList.contains('open') ? closeDrawer() : openDrawer(); });
-overlay.addEventListener('click', closeDrawer);
-document.querySelectorAll('.drawer-link').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const targetId = link.getAttribute('href');
-    if (!targetId || !targetId.startsWith('#')) return;
-    closeDrawer();
-    setTimeout(() => {
-      const target = document.querySelector(targetId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        window.location.hash = targetId;
-      }
-    }, 350);
-  });
-});
 </script>
 </body>
 </html>
