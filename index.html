@@ -3,111 +3,354 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin | Frich 'N Fries</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<title>Frich 'N Fries – American Burgers | Córdoba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 <style>
-  :root { --red: #D4241A; --yellow: #F5C842; --dark: #0E0C09; --cream: #F2ECD8; }
-  body { background: var(--dark); color: var(--cream); font-family: 'DM Sans', sans-serif; padding: 40px; }
-  .container { max-width: 600px; margin: 0 auto; background: #1A1410; padding: 30px; border: 1px solid rgba(245,200,66,0.13); }
-  h1, h2 { color: var(--yellow); }
-  input, textarea, button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px; box-sizing: border-box; }
-  input, textarea { background: #2a221b; border: 1px solid #3a322b; color: white; }
-  button { background: var(--red); color: white; border: none; font-weight: bold; cursor: pointer; }
-  button:hover { background: #b81e15; }
-  .hidden { display: none; }
-  .item-row { display: flex; justify-content: space-between; background: #2a221b; padding: 10px; margin-bottom: 10px; }
-  .del-btn { background: #333; width: auto; margin: 0; padding: 5px 10px; }
-  .del-btn:hover { background: var(--red); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --red:    #D4241A;
+  --yellow: #F5C842;
+  --cream:  #F2ECD8;
+  --dark:   #0E0C09;
+  --brown:  #1A1410;
+  --muted:  #7A6D5E;
+  --border: rgba(245,200,66,0.13);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--dark); color: var(--cream); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+* { position: relative; z-index: 1; }
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  background: rgba(14,12,9,0.93);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.55rem; letter-spacing: 0.06em; color: var(--yellow); }
+.nav-logo span { color: var(--red); }
+nav ul { list-style: none; display: flex; gap: 30px; }
+nav ul a { color: rgba(242,236,216,0.6); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; transition: color .2s; }
+nav ul a:hover { color: var(--cream); }
+.nav-cta { background: var(--red) !important; color: var(--cream) !important; padding: 9px 22px; border-radius: 2px; font-weight: 600 !important; }
+.nav-cta:hover { background: #b81e15 !important; }
+#hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 130px 24px 90px;
+  background: radial-gradient(ellipse 80% 55% at 50% 20%, rgba(212,36,26,0.13) 0%, transparent 65%), radial-gradient(ellipse 50% 35% at 85% 85%, rgba(245,200,66,0.05) 0%, transparent 60%);
+}
+.hero-badge { display: inline-block; border: 1px solid rgba(245,200,66,0.5); color: var(--yellow); font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; padding: 7px 20px; margin-bottom: 30px; animation: fadeUp .7s ease both; }
+.hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5.5rem, 17vw, 14rem); line-height: 0.87; color: var(--cream); animation: fadeUp .7s .12s ease both; }
+.hero-title .red { color: var(--red); }
+.hero-title .sub { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.8rem, 4.5vw, 4rem); color: var(--yellow); display: block; letter-spacing: 0.05em; line-height: 1.1; margin-bottom: 4px; }
+.hero-desc { max-width: 460px; margin: 30px auto 0; font-size: 1.05rem; color: var(--muted); line-height: 1.75; animation: fadeUp .7s .25s ease both; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 46px; animation: fadeUp .7s .38s ease both; }
+.btn-primary { background: var(--red); color: var(--cream); padding: 15px 38px; border-radius: 2px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: transform .15s, background .2s; }
+.btn-primary:hover { background: #b81e15; transform: translateY(-2px); }
+.btn-outline { border: 1px solid rgba(242,236,216,0.25); color: var(--cream); padding: 15px 38px; border-radius: 2px; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: border-color .2s, color .2s, transform .15s; }
+.btn-outline:hover { border-color: var(--yellow); color: var(--yellow); transform: translateY(-2px); }
+.scroll-hint { margin-top: 80px; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.35; animation: fadeUp .7s .5s ease both; }
+.scroll-hint span { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; }
+.scroll-line { width: 1px; height: 46px; background: var(--cream); animation: scrollAnim 1.8s ease infinite; }
+.marquee-wrap { overflow: hidden; background: var(--red); padding: 11px 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.marquee-track { display: flex; white-space: nowrap; animation: marquee 22s linear infinite; }
+.marquee-track span { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.14em; color: rgba(242,236,216,0.9); padding: 0 28px; }
+.marquee-track .sep { color: var(--yellow); opacity: 1; }
+section { padding: 100px 24px; }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-eyebrow { font-size: 0.67rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--yellow); margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+.section-eyebrow::before { content:''; display:inline-block; width:28px; height:1px; background:var(--yellow); }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; letter-spacing: 0.02em; }
+#story { background: linear-gradient(180deg, var(--dark) 0%, #120f0b 100%); }
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 60px; }
+.story-p { font-size: 1.02rem; color: rgba(242,236,216,0.62); line-height: 1.82; margin-bottom: 18px; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.1); margin-top: 40px; }
+.stat { background: var(--brown); padding: 26px 22px; text-align: center; }
+.stat .n { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--yellow); line-height: 1; }
+.stat .l { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
+.pullquote { background: var(--brown); border-left: 3px solid var(--red); padding: 28px 30px; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; line-height: 1.65; color: var(--cream); margin-bottom: 20px; }
+.pullquote cite { display: block; margin-top: 14px; font-family: 'DM Sans', sans-serif; font-style: normal; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.pillars { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.pillars li { display: flex; align-items: flex-start; gap: 13px; font-size: 0.92rem; color: rgba(242,236,216,0.65); line-height: 1.5; }
+.pillars li .ic { width: 28px; height: 28px; flex-shrink: 0; border-radius: 2px; background: rgba(212,36,26,0.12); border: 1px solid rgba(212,36,26,0.25); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; }
+#menu { background: var(--brown); }
+.menu-note-badge { display: inline-block; background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.22); color: var(--yellow); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 7px 16px; margin: 22px 0 46px; }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 2px; }
+.menu-card { background: rgba(10,8,6,0.55); border: 1px solid var(--border); padding: 26px 24px; transition: border-color .2s, background .2s; }
+.menu-card:hover { border-color: rgba(245,200,66,0.3); background: rgba(10,8,6,0.85); }
+.card-tag { display: inline-block; background: var(--red); color: var(--cream); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; padding: 3px 8px; margin-bottom: 8px; }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.card-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 0.04em; color: var(--cream); line-height: 1.1; flex: 1; }
+.card-icon { font-size: 1.5rem; margin-left: 10px; }
+.card-desc { font-size: 0.86rem; color: var(--muted); line-height: 1.65; margin: 6px 0 18px; }
+.card-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.75rem; color: var(--yellow); letter-spacing: 0.02em; }
+.card-price .curr { font-size: 0.95rem; color: var(--muted); margin-right: 2px; }
+.sides-heading { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: var(--muted); letter-spacing: 0.06em; margin: 56px 0 22px; }
+.sides-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.side-chip { background: rgba(10,8,6,0.55); border: 1px solid var(--border); padding: 10px 16px; display: flex; gap: 10px; align-items: center; font-size: 0.86rem; color: rgba(242,236,216,0.6); }
+.side-chip .sp { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--yellow); letter-spacing: 0.04em; }
+#locations { background: var(--dark); }
+.loc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 56px; }
+.loc-card { background: var(--brown); border: 1px solid var(--border); padding: 40px 34px; overflow: hidden; }
+.loc-num { position: absolute; top: 14px; right: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; color: rgba(245,200,66,0.06); }
+.loc-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.04em; color: var(--yellow); margin-bottom: 8px; }
+.loc-addr { font-size: 0.98rem; color: rgba(242,236,216,0.6); line-height: 1.55; margin-bottom: 22px; }
+.loc-hours { display: flex; align-items: center; gap: 10px; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.pulse { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; flex-shrink: 0; animation: pulseGreen 2s ease infinite; }
+#order { background: var(--red); text-align: center; padding: 80px 24px; }
+#order .section-eyebrow { justify-content: center; color: rgba(242,236,216,0.65); }
+#order .section-eyebrow::before { background: rgba(242,236,216,0.3); }
+#order .section-title { color: var(--cream); margin-bottom: 14px; }
+#order .sub-p { max-width: 420px; margin: 0 auto 42px; font-size: 1rem; color: rgba(242,236,216,0.72); line-height: 1.72; }
+.order-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-wh { background: var(--cream); color: var(--red); padding: 15px 34px; border-radius: 2px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 9px; transition: background .2s, transform .15s; }
+.btn-wh:hover { background: #fff; transform: translateY(-2px); }
+.btn-wh-ol { border: 2px solid rgba(242,236,216,0.45); color: var(--cream); padding: 15px 34px; border-radius: 2px; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 9px; transition: border-color .2s, transform .15s; }
+.btn-wh-ol:hover { border-color: var(--cream); transform: translateY(-2px); }
+footer { background: #080706; border-top: 1px solid var(--border); padding: 60px 24px 36px; }
+.foot-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; }
+.foot-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--yellow); letter-spacing: 0.06em; margin-bottom: 12px; }
+.foot-logo span { color: var(--red); }
+.foot-desc { font-size: 0.86rem; color: var(--muted); line-height: 1.72; max-width: 250px; }
+footer h4 { font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--yellow); margin-bottom: 16px; }
+footer ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+footer ul li a { font-size: 0.88rem; color: var(--muted); text-decoration: none; transition: color .2s; }
+footer ul li a:hover { color: var(--cream); }
+footer ul li span { font-size: 0.86rem; color: var(--muted); line-height: 1.5; display: block; }
+.foot-bottom { max-width: 1100px; margin: 44px auto 0; padding-top: 22px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 0.73rem; color: rgba(122,109,94,0.45); }
+.hamburger { display: none; flex-direction: column; justify-content: center; align-items: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; z-index: 1001; -webkit-tap-highlight-color: transparent; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--cream); transition: transform .3s, opacity .3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.mobile-drawer { display: none; position: fixed; top: 0; right: 0; bottom: 0; width: 280px; z-index: 1000; background: #100d09; border-left: 1px solid var(--border); flex-direction: column; padding: 90px 32px 40px; gap: 6px; transform: translateX(100%); transition: transform .35s cubic-bezier(.4,0,.2,1); }
+.mobile-drawer.open { transform: translateX(0); }
+.drawer-link { display: block; color: rgba(242,236,216,0.7); text-decoration: none; font-size: 1.1rem; letter-spacing: 0.12em; text-transform: uppercase; font-family: 'Bebas Neue', sans-serif; padding: 14px 0; border-bottom: 1px solid var(--border); transition: color .2s; -webkit-tap-highlight-color: transparent; }
+.drawer-link:hover, .drawer-link:active { color: var(--yellow); }
+.drawer-cta { margin-top: 16px; background: var(--red); color: var(--cream) !important; padding: 16px 24px; text-align: center; border-bottom: none !important; border-radius: 2px; }
+.drawer-overlay { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); opacity: 0; transition: opacity .3s; }
+.drawer-overlay.open { opacity: 1; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes scrollAnim { 0%, 100% { opacity: 0.3; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(0.65); } }
+@keyframes pulseGreen { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@media (max-width: 768px) {
+  nav ul { display: none; }
+  nav { padding: 16px 20px; }
+  .hamburger { display: flex; }
+  .mobile-drawer { display: flex; }
+  .drawer-overlay { display: block; }
+  .story-grid, .loc-grid, .foot-inner { grid-template-columns: 1fr; gap: 36px; }
+  .foot-bottom { flex-direction: column; gap: 6px; text-align: center; }
+  section { padding: 70px 16px; }
+  .hero-title { font-size: clamp(4rem, 18vw, 7rem); }
+  .btn-primary, .btn-outline { padding: 18px 28px; font-size: 0.9rem; width: 100%; text-align: center; justify-content: center; }
+  .hero-btns { flex-direction: column; align-items: stretch; max-width: 320px; margin-left: auto; margin-right: auto; }
+  .btn-wh, .btn-wh-ol { padding: 18px 20px; font-size: 0.9rem; justify-content: center; width: 100%; }
+  .order-btns { flex-direction: column; align-items: stretch; max-width: 320px; margin-left: auto; margin-right: auto; }
+  .menu-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .loc-card { padding: 28px 22px; }
+  .menu-card { padding: 22px 18px; }
+}
 </style>
 </head>
 <body>
-<div class="container" id="loginSection">
-  <h1>Admin Login</h1>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Contraseña">
-  <button id="loginBtn">Ingresar</button>
-  <p id="loginError" style="color: var(--red);"></p>
+<nav>
+  <div class="nav-logo">Frich<span>'N</span>Fries</div>
+  <ul id="navLinks">
+    <li><a href="#story" class="nav-link">Nosotros</a></li>
+    <li><a href="#menu" class="nav-link">Menú</a></li>
+    <li><a href="#locations" class="nav-link">Locales</a></li>
+    <li><a href="#order" class="nav-link nav-cta">Pedir ahora</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="#story" class="drawer-link">Nosotros</a>
+  <a href="#menu" class="drawer-link">Menú</a>
+  <a href="#locations" class="drawer-link">Locales</a>
+  <a href="#order" class="drawer-link drawer-cta">Pedir ahora →</a>
 </div>
-<div class="container hidden" id="adminSection">
-  <h1>Panel de Control</h1>
-  <button id="logoutBtn" style="background: #333;">Cerrar Sesión</button>
-  <hr style="border-color: #3a322b; margin: 20px 0;">
-  <h2>Agregar Hamburguesa</h2>
-  <input type="text" id="bName" placeholder="Nombre (ej. California Burger)">
-  <input type="number" id="bPrice" placeholder="Precio (ej. 13500)">
-  <textarea id="bDesc" placeholder="Descripción de los ingredientes..." rows="3"></textarea>
-  <input type="text" id="bTag" placeholder="Tag opcional (ej. POPULAR, NUEVO)">
-  <input type="text" id="bEmoji" placeholder="Emoji (ej. 🍔)">
-  <button id="addBurgerBtn">Guardar Hamburguesa</button>
-  <h2 style="margin-top: 40px;">Menú Actual</h2>
-  <div id="burgerList">Cargando...</div>
-</div>
-<script type="module">
-  import { db, auth } from './firebase-config.js';
-  import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-  import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-  const loginSec = document.getElementById('loginSection');
-  const adminSec = document.getElementById('adminSection');
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loginSec.classList.add('hidden');
-      adminSec.classList.remove('hidden');
-      loadAdminMenu();
-    } else {
-      loginSec.classList.remove('hidden');
-      adminSec.classList.add('hidden');
-    }
-  });
-  document.getElementById('loginBtn').addEventListener('click', async () => {
-    const e = document.getElementById('email').value;
-    const p = document.getElementById('password').value;
-    try {
-      await signInWithEmailAndPassword(auth, e, p);
-    } catch (err) {
-      document.getElementById('loginError').innerText = "Credenciales incorrectas.";
-    }
-  });
-  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
-  document.getElementById('addBurgerBtn').addEventListener('click', async () => {
-    const btn = document.getElementById('addBurgerBtn');
-    btn.innerText = "Guardando...";
-    try {
-      await addDoc(collection(db, "burgers"), {
-        name: document.getElementById('bName').value,
-        price: Number(document.getElementById('bPrice').value),
-        description: document.getElementById('bDesc').value,
-        tag: document.getElementById('bTag').value,
-        emoji: document.getElementById('bEmoji').value
-      });
-      alert("¡Hamburguesa agregada!");
-      document.querySelectorAll('input, textarea').forEach(el => el.value = '');
-      loadAdminMenu();
-    } catch (e) {
-      console.error(e);
-      alert("Error al guardar.");
-    }
-    btn.innerText = "Guardar Hamburguesa";
-  });
-  async function loadAdminMenu() {
-    const list = document.getElementById('burgerList');
-    list.innerHTML = '';
-    const querySnapshot = await getDocs(collection(db, "burgers"));
-    querySnapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      list.innerHTML += `
-        <div class="item-row">
-          <span><strong>${data.name}</strong> - $${data.price}</span>
-          <button class="del-btn" onclick="deleteItem('${docSnap.id}')">Eliminar</button>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<section id="hero">
+  <div class="hero-badge">Córdoba · Since 2020 · 100% Yankee</div>
+  <h1 class="hero-title">
+    <span class="sub">Frich 'N Fries</span>
+    AMERICAN<br><span class="red">BURGERS</span>
+  </h1>
+  <p class="hero-desc">Pan importado de EE.UU. Carne real. Queso que se derrite. La hamburguesa americana que faltaba en Córdoba.</p>
+  <div class="hero-btns">
+    <a href="#menu" class="btn-primary">Ver el menú</a>
+    <a href="#order" class="btn-outline">Pedir delivery</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+<div class="marquee-wrap"><div class="marquee-track" id="mtrack"></div></div>
+<section id="story">
+  <div class="container">
+    <div class="section-eyebrow">Nuestra historia</div>
+    <h2 class="section-title">Nació en pandemia.<br>Creció en serio.</h2>
+    <div class="story-grid">
+      <div>
+        <p class="story-p">Frich arrancó en plena pandemia con una sola obsesión: traer la hamburguesa americana de verdad a Córdoba. Sin atajos, sin ingredientes genéricos.</p>
+        <p class="story-p">El pan viene de Estados Unidos. Los aderezos, también. Incluso las canastitas en las que servimos la burger cruzaron el océano para llegar acá.</p>
+        <p class="story-p">Cinco años después, con dos locales y una clientela que vuelve sola, la apuesta valió la pena.</p>
+        <div class="stats-grid">
+          <div class="stat"><div class="n">4.4</div><div class="l">Rating Google</div></div>
+          <div class="stat"><div class="n">5</div><div class="l">Años en Córdoba</div></div>
+          <div class="stat"><div class="n">2</div><div class="l">Locales propios</div></div>
+          <div class="stat"><div class="n">100%</div><div class="l">Sin franquicias</div></div>
         </div>
-      `;
-    });
-  }
-  window.deleteItem = async (id) => {
-    if(confirm("¿Seguro que quieres eliminar esta hamburguesa?")) {
-      await deleteDoc(doc(db, "burgers", id));
-      loadAdminMenu();
+      </div>
+      <div>
+        <div class="pullquote">"Si la gente busca una hamburguesa americana de verdad, la va a encontrar acá."<cite>— Federico Givogri, fundador</cite></div>
+        <ul class="pillars">
+          <li><span class="ic">🇺🇸</span> Pan Martins importado directo de Estados Unidos</li>
+          <li><span class="ic">🧀</span> Cuádruple cheddar en cada burger, sin negociar</li>
+          <li><span class="ic">🔥</span> Carne cocinada al momento, a la vista</li>
+          <li><span class="ic">📦</span> Delivery con la misma calidad que en el local</li>
+          <li><span class="ic">🚫</span> Sin franquicias — crecimiento propio y controlado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="menu">
+  <div class="container">
+    <div class="section-eyebrow">Lo que hacemos</div>
+    <h2 class="section-title">El menú</h2>
+    <div class="menu-note-badge">★ Todas las hamburguesas incluyen papas fritas.</div>
+    <div class="menu-grid" id="menuGrid"><div style="color:var(--muted);padding:20px;">Cargando menú...</div></div>
+    <div class="sides-heading">Acompañamientos</div>
+    <div class="sides-row">
+      <div class="side-chip">Ketchup (pote) <span class="sp">$400</span></div>
+      <div class="side-chip">Mostaza (pote) <span class="sp">$500</span></div>
+      <div class="side-chip">Relish (pote) <span class="sp">$500</span></div>
+      <div class="side-chip">Thousand Island (pote) <span class="sp">$500</span></div>
+    </div>
+  </div>
+</section>
+<section id="locations">
+  <div class="container">
+    <div class="section-eyebrow">Dónde encontrarnos</div>
+    <h2 class="section-title">Nuestros locales</h2>
+    <div class="loc-grid">
+      <div class="loc-card"><span class="loc-num">01</span><div class="loc-name">Nueva Córdoba</div><div class="loc-addr">Ituzaingó 909, Nueva Córdoba</div><div class="loc-hours"><span class="pulse"></span>Todos los días · 20:00 a 00:00</div></div>
+      <div class="loc-card"><span class="loc-num">02</span><div class="loc-name">Valle Escondido</div><div class="loc-addr">Av. República de China 1400, Valle Escondido</div><div class="loc-hours"><span class="pulse"></span>Todos los días · 20:00 a 00:00</div></div>
+    </div>
+  </div>
+</section>
+<section id="order">
+  <div class="container">
+    <div class="section-eyebrow">¿Con hambre?</div>
+    <h2 class="section-title">Pedí ahora</h2>
+    <p class="sub-p">Delivery a tu casa o retiro en el local. Todas las hamburguesas salen con papas incluidas.</p>
+    <div class="order-btns">
+      <a href="https://wa.me/5493510000000" target="_blank" class="btn-wh">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="https://www.rappi.com.ar/restaurantes/132532-frich-hamburgueseria" target="_blank" class="btn-wh-ol">🛵 Rappi</a>
+      <a href="https://instagram.com/frich.hamburguesas" target="_blank" class="btn-wh-ol">📸 Instagram</a>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="foot-inner">
+    <div>
+      <div class="foot-logo">Frich<span>'N</span>Fries</div>
+      <p class="foot-desc">La hamburguesa americana que faltaba en Córdoba. Pan importado, carne real, sin vueltas.</p>
+    </div>
+    <div>
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="#story">Nuestra historia</a></li>
+        <li><a href="#menu">Menú</a></li>
+        <li><a href="#locations">Locales</a></li>
+        <li><a href="#order">Pedir ahora</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contacto</h4>
+      <ul>
+        <li><span>Ituzaingó 909, Nueva Córdoba</span></li>
+        <li><span>Av. República de China 1400, Valle Escondido</span></li>
+        <li><a href="https://wa.me/5493510000000">WhatsApp</a></li>
+        <li><a href="https://instagram.com/frich.hamburguesas" target="_blank">@frich.hamburguesas</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 Frich 'N Fries · Córdoba, Argentina</span>
+    <span>Hecho con obsesión por los detalles.</span>
+  </div>
+</footer>
+<script type="module">
+import { db } from './firebase-config.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+// Marquee
+const phrases = ["CALIFORNIA BURGER","BACON CHEESEBURGER","GRAND BACON","DOBLE FRIED ONION","BIG EM","EGG 'N BACON","BELL PEPPER","PAN DE ESTADOS UNIDOS","CUÁDRUPLE CHEDDAR","PAPAS INCLUIDAS"];
+const t = document.getElementById('mtrack');
+[...phrases,...phrases].forEach(p => {
+  const s = document.createElement('span');
+  s.innerHTML = p + ' <span class="sep">✦</span>';
+  t.appendChild(s);
+});
+
+// Load menu from Firebase
+const g = document.getElementById('menuGrid');
+const loadingItem = '<div style="color:var(--muted);padding:20px;">Cargando menú...</div>';
+g.innerHTML = loadingItem;
+(async function() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "burgers"));
+    if (querySnapshot.empty) {
+      g.innerHTML = '<div style="color:var(--muted);padding:20px;">No hay hamburguesas disponibles por el momento.</div>';
+    } else {
+      g.innerHTML = '';
+      querySnapshot.forEach((doc) => {
+        const b = doc.data();
+        g.innerHTML += `<div class="menu-card">
+          ${b.tag ? `<div class="card-tag">${b.tag}</div>` : ''}
+          <div class="card-header">
+            <div class="card-name">${b.name || 'Hamburguesa'}</div>
+            <span class="card-icon">${b.emoji || '🍔'}</span>
+          </div>
+          <div class="card-desc">${b.description || ''}</div>
+          <div class="card-price"><span class="curr">$</span>${Number(b.price || 0).toLocaleString('es-AR')}</div>
+        </div>`;
+      });
     }
-  };
+  } catch(e) {
+    g.innerHTML = '<div style="color:var(--muted);padding:20px;">Error al cargar el menú.</div>';
+    console.error('Firestore load error', e);
+  }
+})();
+
+// Mobile drawer
+const hamburger = document.getElementById('hamburger');
+const drawer = document.getElementById('mobileDrawer');
+const overlay = document.getElementById('drawerOverlay');
+function openDrawer() { hamburger.classList.add('open'); drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeDrawer() { hamburger.classList.remove('open'); drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+hamburger.addEventListener('click', () => { drawer.classList.contains('open') ? closeDrawer() : openDrawer(); });
+overlay.addEventListener('click', closeDrawer);
+document.querySelectorAll('.drawer-link').forEach(link => { link.addEventListener('click', closeDrawer); });
 </script>
 </body>
 </html>
