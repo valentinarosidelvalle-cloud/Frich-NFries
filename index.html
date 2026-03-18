@@ -350,7 +350,22 @@ function openDrawer() { hamburger.classList.add('open'); drawer.classList.add('o
 function closeDrawer() { hamburger.classList.remove('open'); drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
 hamburger.addEventListener('click', () => { drawer.classList.contains('open') ? closeDrawer() : openDrawer(); });
 overlay.addEventListener('click', closeDrawer);
-document.querySelectorAll('.drawer-link').forEach(link => { link.addEventListener('click', closeDrawer); });
+document.querySelectorAll('.drawer-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    if (!targetId || !targetId.startsWith('#')) return;
+    closeDrawer();
+    setTimeout(() => {
+      const target = document.querySelector(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.location.hash = targetId;
+      }
+    }, 350);
+  });
+});
 </script>
 </body>
 </html>
