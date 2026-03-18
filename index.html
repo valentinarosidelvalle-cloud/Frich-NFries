@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | Frich 'N Fries</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --red: #D4241A; --yellow: #F5C842; --dark: #0E0C09; --cream: #F2ECD8; }
+  body { background: var(--dark); color: var(--cream); font-family: 'DM Sans', sans-serif; padding: 40px; }
+  .container { max-width: 600px; margin: 0 auto; background: #1A1410; padding: 30px; border: 1px solid rgba(245,200,66,0.13); }
+  h1, h2 { color: var(--yellow); }
+  input, textarea, button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px; box-sizing: border-box; }
+  input, textarea { background: #2a221b; border: 1px solid #3a322b; color: white; }
+  button { background: var(--red); color: white; border: none; font-weight: bold; cursor: pointer; }
+  button:hover { background: #b81e15; }
+  .hidden { display: none; }
+  .item-row { display: flex; justify-content: space-between; background: #2a221b; padding: 10px; margin-bottom: 10px; }
+  .del-btn { background: #333; width: auto; margin: 0; padding: 5px 10px; }
+  .del-btn:hover { background: var(--red); }
+</style>
+</head>
+<body>
+<div class="container" id="loginSection">
+  <h1>Admin Login</h1>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Contraseña">
+  <button id="loginBtn">Ingresar</button>
+  <p id="loginError" style="color: var(--red);"></p>
+</div>
+<div class="container hidden" id="adminSection">
+  <h1>Panel de Control</h1>
+  <button id="logoutBtn" style="background: #333;">Cerrar Sesión</button>
+  <hr style="border-color: #3a322b; margin: 20px 0;">
+  <h2>Agregar Hamburguesa</h2>
+  <input type="text" id="bName" placeholder="Nombre (ej. California Burger)">
+  <input type="number" id="bPrice" placeholder="Precio (ej. 13500)">
+  <textarea id="bDesc" placeholder="Descripción de los ingredientes..." rows="3"></textarea>
+  <input type="text" id="bTag" placeholder="Tag opcional (ej. POPULAR, NUEVO)">
+  <input type="text" id="bEmoji" placeholder="Emoji (ej. 🍔)">
+  <button id="addBurgerBtn">Guardar Hamburguesa</button>
+  <h2 style="margin-top: 40px;">Menú Actual</h2>
+  <div id="burgerList">Cargando...</div>
+</div>
+<script type="module">
+  import { db, auth } from './firebase-config.js';
+  import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+  import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  const loginSec = document.getElementById('loginSection');
+  const adminSec = document.getElementById('adminSection');
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginSec.classList.add('hidden');
+      adminSec.classList.remove('hidden');
+      loadAdminMenu();
+    } else {
+      loginSec.classList.remove('hidden');
+      adminSec.classList.add('hidden');
+    }
+  });
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const e = document.getElementById('email').value;
+    const p = document.getElementById('password').value;
+    try {
+      await signInWithEmailAndPassword(auth, e, p);
+    } catch (err) {
+      document.getElementById('loginError').innerText = "Credenciales incorrectas.";
+    }
+  });
+  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+  document.getElementById('addBurgerBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('addBurgerBtn');
+    btn.innerText = "Guardando...";
+    try {
+      await addDoc(collection(db, "burgers"), {
+        name: document.getElementById('bName').value,
+        price: Number(document.getElementById('bPrice').value),
+        description: document.getElementById('bDesc').value,
+        tag: document.getElementById('bTag').value,
+        emoji: document.getElementById('bEmoji').value
+      });
+      alert("¡Hamburguesa agregada!");
+      document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+      loadAdminMenu();
+    } catch (e) {
+      console.error(e);
+      alert("Error al guardar.");
+    }
+    btn.innerText = "Guardar Hamburguesa";
+  });
+  async function loadAdminMenu() {
+    const list = document.getElementById('burgerList');
+    list.innerHTML = '';
+    const querySnapshot = await getDocs(collection(db, "burgers"));
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      list.innerHTML += `
+        <div class="item-row">
+          <span><strong>${data.name}</strong> - $${data.price}</span>
+          <button class="del-btn" onclick="deleteItem('${docSnap.id}')">Eliminar</button>
+        </div>
+      `;
+    });
+  }
+  window.deleteItem = async (id) => {
+    if(confirm("¿Seguro que quieres eliminar esta hamburguesa?")) {
+      await deleteDoc(doc(db, "burgers", id));
+      loadAdminMenu();
+    }
+  };
+</script>
+</body>
+</html>
